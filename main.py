@@ -1,6 +1,7 @@
 import asyncio
 
 import logging
+import random
 from datetime import datetime, timedelta
 
 from aiogram import Bot, Dispatcher, types, F
@@ -14,9 +15,10 @@ from config_reader import config
 async def is_admin(message, bo):
     member = await bot.get_chat_member(message.chat.id, message.from_user.id)
     b = await bo.get_chat_member(message.chat.id, bot.id)
-    if message.from_user.id == 969043918:
+    if message.from_user.id == config.admin_id.get_secret_value():
         return True
-    if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR] or b.status != ChatMemberStatus.ADMINISTRATOR:
+    if (member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR] or
+            b.status != ChatMemberStatus.ADMINISTRATOR):
         return False
     return True
 
@@ -34,18 +36,17 @@ async def cmd_start(message: types.Message):
                         'с правами администратора и напиши !помощь')
 
 
-# @dp.message_text(F.text, ChatTypeFilter(['group', 'supergroup']))
-# async def cmd_help(message_text: types.Message):
-#     await message_text.reply()
-
-
 @dp.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['написать', 'Написать',
                                                                             '!write', '!send', '/write',
-                                                                            'Отправить', '!написать', '!Написать']))
+                                                                            'Отправить', '!написать', 'отправить']))
 async def cmd_write(message: types.Message):
     if await is_admin(message, bot):
         if len(message.text.split()) > 1:
-            await message.answer(" ".join(message.text.split()[1:]))
+            mt = message.text
+            for i in range(len(message.text)):
+                if message.text[i] == ' ':
+                    mt = message.text[i + 1:]
+            await message.answer(mt)
         else:
             await message.reply("Ошибка! \nПустой текст!")
 
@@ -60,7 +61,10 @@ async def cmd_mute(message: types.Message):
     elif not await is_admin(message, bot):
         await message.reply('Ошибка! Вы не администратор группы!')
         return
-    elif message.reply_to_message.from_user.id == 969043918:
+    elif not await is_admin(message.reply_to_message, bot):
+        await message.reply('Ошибка! Пользователь админ!')
+        return
+    elif message.reply_to_message.from_user.id == config.admin_id.get_secret_value():
         await message.reply('Произошла ошибка! Напишите в чат @liinkyyhelp')
         return
     try:
@@ -101,8 +105,14 @@ async def cmd_mute(message: types.Message):
                                                                             'размутить', '!unmute', '!Unmute',
                                                                             '/unmute', '+голос']))
 async def cmd_unmute(message: types.Message):
-    if not message.reply_to_message or not await is_admin(message, bot):
+    if not message.reply_to_message:
         await message.reply('Ошибка! Команда должна быть ответом на сообщение нарушителя!')
+        return
+    elif not await is_admin(message, bot):
+        await message.reply('Ошибка! Вы не администратор группы!')
+        return
+    elif not await is_admin(message.reply_to_message, bot):
+        await message.reply('Ошибка! Пользователь админ!')
         return
     await bot.restrict_chat_member(message.chat.id, message.reply_to_message.from_user.id,
                                    types.ChatPermissions(can_send_messages=True))
@@ -112,9 +122,14 @@ async def cmd_unmute(message: types.Message):
 @dp.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['Бан', 'бан', 'забанить',
                                                                             'Забанить', '!ban', '/ban', '-чел']))
 async def cmd_ban(message: types.Message):
-    if not message.reply_to_message or not await is_admin(message, bot):
+    if not message.reply_to_message:
         await message.reply('Ошибка! Команда должна быть ответом на сообщение нарушителя!')
         return
+    elif not await is_admin(message, bot):
+        await message.reply('Ошибка! Вы не администратор группы!')
+        return
+    elif not await is_admin(message.reply_to_message, bot):
+        await message.reply('Ошибка! Пользователь админ!')
     await bot.ban_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     await message.answer(f"Пользователь был забанен! ❌\nДля разбана обратись к администраторам группы 🤓")
 
@@ -125,8 +140,22 @@ async def cmd_ban(message: types.Message):
 async def cmd_help(message: types.Message):
     await message.answer("🧐 Помощь \nТы всегда можешь написать в чат @liinkyyhelp, если у тебя есть "
                          "вопрос \nДоступные команды находятся на <a href='https://limeteam.gitbook.io/link'>"
-                         "сайте</a>",
-                         parse_mode='html')
+                         "сайте</a>")
+
+
+@dp.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['/random', '!rand', 'рандом',
+                                                                            'ранд', 'Рандом', 'Ранд']))
+async def cmd_rand(message: types.Message):
+    try:
+        start = int(message.text.split()[1])
+        end = int(message.text.split()[2])
+        if start > end:
+            await message.reply("Ошибка! Начальное число больше последнего!")
+            return
+    except IndexError:
+        await message.reply("Ошибка! Недостаточно аргументов! \nПример: !rand 1 100")
+        return
+    await message.reply(f"Ваше случайное число... 😲\n{random.randint(start, end)}!")
 
 
 async def main():
