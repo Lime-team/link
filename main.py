@@ -1,3 +1,4 @@
+
 import asyncio
 
 import logging
@@ -140,7 +141,7 @@ async def cmd_ban(message: types.Message):
 async def cmd_help(message: types.Message):
     await message.answer("🧐 Помощь \nТы всегда можешь написать в чат @liinkyyhelp, если у тебя есть "
                          "вопрос \nДоступные команды находятся на <a href='https://limeteam.gitbook.io/link'>"
-                         "сайте</a>")
+                         "сайте</a>", parse_mode="html")
 
 
 @dp.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['/random', '!rand', 'рандом',
