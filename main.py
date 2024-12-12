@@ -1,4 +1,3 @@
-
 import asyncio
 
 import logging
@@ -62,7 +61,7 @@ async def cmd_mute(message: types.Message):
     elif not await is_admin(message, bot):
         await message.reply('Ошибка! Вы не администратор группы!')
         return
-    elif not await is_admin(message.reply_to_message, bot):
+    elif await is_admin(message.reply_to_message, bot):
         await message.reply('Ошибка! Пользователь админ!')
         return
     elif message.reply_to_message.from_user.id == config.admin_id.get_secret_value():
@@ -112,7 +111,7 @@ async def cmd_unmute(message: types.Message):
     elif not await is_admin(message, bot):
         await message.reply('Ошибка! Вы не администратор группы!')
         return
-    elif not await is_admin(message.reply_to_message, bot):
+    elif await is_admin(message.reply_to_message, bot):
         await message.reply('Ошибка! Пользователь админ!')
         return
     await bot.restrict_chat_member(message.chat.id, message.reply_to_message.from_user.id,
@@ -129,7 +128,7 @@ async def cmd_ban(message: types.Message):
     elif not await is_admin(message, bot):
         await message.reply('Ошибка! Вы не администратор группы!')
         return
-    elif not await is_admin(message.reply_to_message, bot):
+    elif await is_admin(message.reply_to_message, bot):
         await message.reply('Ошибка! Пользователь админ!')
     await bot.ban_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     await message.answer(f"Пользователь был забанен! ❌\nДля разбана обратись к администраторам группы 🤓")
