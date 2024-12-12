@@ -82,6 +82,7 @@ async def cmd_write(message: types.Message, bot: Bot):
             for i in range(len(message.text)):
                 if message.text[i] == ' ':
                     mt = message.text[i + 1:]
+                    break
             await message.answer(mt)
         else:
             await message.reply("Ошибка! \nПустой текст!")

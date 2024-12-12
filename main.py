@@ -5,13 +5,11 @@ async def main():
 
     from config_reader import config
 
-    logging.basicConfig(level=logging.ERROR)
+    logging.basicConfig(level=logging.INFO)
 
     bot = Bot(token=config.bot_token.get_secret_value())
 
     dp = Dispatcher()
-
-    dp.include_routers()
 
     from cmds.group_moder import router as group_moder_router
     from cmds.group import router as group_router
