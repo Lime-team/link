@@ -14,7 +14,7 @@ router = Router()
                                                                             '/help']))
 async def cmd_help(message: types.Message):
     await message.answer("🧐 Помощь \nТы всегда можешь написать в чат @liinkyyhelp, если у тебя есть "
-                         "вопрос \nДоступные команды находятся на <a href='https://limeteam.gitbook.io/link'>"
+                         "вопрос \nДоступные команды находятся на <a href='https://liinkyy.gitbook.io/link'>"
                          "сайте</a>", parse_mode="html")
 
 

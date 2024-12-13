@@ -32,6 +32,7 @@ async def get(column, what, is_what):
                                   loop=loop)
 
     cur = await conn.cursor()
+
     await cur.execute(f"SELECT %s FROM users WHERE id = %s", (column, is_what))
 
     r = await cur.fetchall()
