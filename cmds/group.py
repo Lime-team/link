@@ -53,4 +53,5 @@ async def cmd_about_me(message: types.Message):
     if not tg_id:
         await db.set_user('users', message.from_user.id, 'нет', 'нет', loop)
         return message.reply("Вы были успешно зарегистрированы в системе Линка! Напишите команду ещё раз")
-    return message.reply(f"Вы - @{message.from_user.username}. Ваш id в системе линка: {id}. Описание - {d}. Значки - {i}")
+    return message.reply(f"Вы - @{message.from_user.username}. Ваш id в системе линка: {id[0][0]}. "
+                         f"Описание - {d[0][0]}. Значки - {i[0][0]}")
