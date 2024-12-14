@@ -20,7 +20,7 @@ router.message.filter(
 @router.message(MessageFilter(['помощь', 'Помощь', 'помощ', 'Помощ', 'хелп', 'Хелп', '!help', '/help']))
 async def cmd_help(message: types.Message):
     await message.answer("🧐 Помощь \nТы всегда можешь написать в чат @liinkyyhelp, если у тебя есть "
-                         "вопрос \nДоступные команды находятся на <a href='https://liinkyy.gitbook.io/link'>"
+                         "вопрос \nДоступные команды находятся на <a href='https://docs.linkbot.run.place'>"
                          "сайте</a>", parse_mode="html")
 
 
@@ -42,12 +42,15 @@ async def cmd_rand(message: types.Message):
                                     'who am i']))
 async def cmd_about_me(message: types.Message):
     loop = asyncio.get_event_loop()
-    d = await db.get('users', 'description', 'id',
+    d = await db.get('users', 'description', 'tg_id',
                                              message.from_user.id, loop)
-    i = await db.get('users', 'icon', 'id',
+    i = await db.get('users', 'icon', 'tg_id',
                                              message.from_user.id, loop)
-    tg_id = await db.get('users', 'id', 'id',
+    tg_id = await db.get('users', 'tg_id', 'tg_id',
+                                             message.from_user.id, loop)
+    id = await db.get('users', 'id', 'tg_id',
                                              message.from_user.id, loop)
     if not tg_id:
         await db.set_user('users', message.from_user.id, 'нет', 'нет', loop)
-    return message.reply(f"Вы - @{message.from_user.username}. Описание - {d[0][0]}. Значки - {i[0][0]}")
+        return message.reply("Вы были успешно зарегистрированы в системе Линка! Напишите команду ещё раз")
+    return message.reply(f"Вы - @{message.from_user.username}. Ваш id в системе линка: {id}. Описание - {d}. Значки - {i}")

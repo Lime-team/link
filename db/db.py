@@ -11,9 +11,10 @@ async def create(loop):
 
     async with conn.cursor() as cur:
         await cur.execute("""CREATE TABLE IF NOT EXISTS users (
-                            id INT, 
-                            description TEXT,
-                            icon TEXT,
+                            id INT,
+                            tg_id INT,
+                            description TEXT NOT NULL,
+                            icon TEXT NOT NULL,
                             PRIMARY KEY (id))""")
         await conn.commit()
 
@@ -48,7 +49,7 @@ async def set_user(table, tg_id, d, i, loop):
                                   loop=loop)
 
     async with conn.cursor() as cur:
-        await cur.execute(f"INSERT INTO {table} (id, description, icon) VALUES (%s, %s, %s)", (tg_id, d, i))
+        await cur.execute(f"INSERT INTO {table} (tg_id, description, icon) VALUES (%s, %s, %s)", (tg_id, d, i))
         await conn.commit()
 
     conn.close()
