@@ -1,12 +1,8 @@
-import asyncio
-
 import aiomysql
 from config_reader import config
 
-loop = asyncio.get_event_loop()
 
-
-async def create():
+async def create(loop):
     conn = await aiomysql.connect(host=config.mysql_host.get_secret_value(),
                                   user=config.mysql_user.get_secret_value(),
                                   password=config.mysql_password.get_secret_value(),
@@ -15,7 +11,7 @@ async def create():
 
     async with conn.cursor() as cur:
         await cur.execute("""CREATE TABLE IF NOT EXISTS users (
-                            id INT AUTO_INCREMENT, 
+                            id INT, 
                             description TEXT,
                             icon TEXT,
                             PRIMARY KEY (id))""")
@@ -24,7 +20,7 @@ async def create():
     conn.close()
 
 
-async def get(column, what, is_what):
+async def get(table, column, where_what, is_what, loop):
     conn = await aiomysql.connect(host=config.mysql_host.get_secret_value(),
                                   user=config.mysql_user.get_secret_value(),
                                   password=config.mysql_password.get_secret_value(),
@@ -33,7 +29,7 @@ async def get(column, what, is_what):
 
     cur = await conn.cursor()
 
-    await cur.execute(f"SELECT %s FROM users WHERE id = %s", (column, is_what))
+    await cur.execute(f"SELECT {column} FROM {table} WHERE {where_what} = %s", (is_what, ))
 
     r = await cur.fetchall()
 
@@ -44,7 +40,7 @@ async def get(column, what, is_what):
     return r
 
 
-async def set(d, i):
+async def set_user(table, tg_id, d, i, loop):
     conn = await aiomysql.connect(host=config.mysql_host.get_secret_value(),
                                   user=config.mysql_user.get_secret_value(),
                                   password=config.mysql_password.get_secret_value(),
@@ -52,7 +48,7 @@ async def set(d, i):
                                   loop=loop)
 
     async with conn.cursor() as cur:
-        await cur.execute(f"INSERT INTO users (description, icon) VALUES (%s, %s)", (d, i))
+        await cur.execute(f"INSERT INTO {table} (id, description, icon) VALUES (%s, %s, %s)", (tg_id, d, i))
         await conn.commit()
 
     conn.close()

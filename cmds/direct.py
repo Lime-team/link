@@ -4,9 +4,13 @@ from filters.chat_type import ChatTypeFilter
 
 
 router = Router()
+router.message.filter(
+    F.text,
+    ChatTypeFilter('private')
+)
 
 
-@router.message(F.text, ChatTypeFilter('private'))
-async def cmd_start(message: types.Message):
+@router.message()
+async def cmd_direct_response(message: types.Message):
     await message.reply('Привет! Я работаю только в группах/супергруппах! Добавь меня туда '
                         'с правами администратора и напиши !помощь')

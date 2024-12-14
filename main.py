@@ -2,12 +2,13 @@ async def main():
     import logging
 
     from aiogram import Bot, Dispatcher
+    from aiogram.client.default import DefaultBotProperties
 
     from config_reader import config
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.ERROR)
 
-    bot = Bot(token=config.bot_token.get_secret_value())
+    bot = Bot(token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode='html'))
 
     dp = Dispatcher()
 

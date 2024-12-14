@@ -7,10 +7,13 @@ from filters.cmd import MessageFilter
 from filters.is_admin import is_admin
 
 router = Router()
+router.message.filter(
+    F.text,
+    ChatTypeFilter(['group', 'supergroup'])
+)
 
 
-@router.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['мут', 'Мут', 'Замутить', 'замутить',
-                                                                            '!mute', '/mute', '-голос']))
+@router.message(MessageFilter(['мут', 'Мут', 'Замутить', 'замутить', '!mute', '/mute', '-голос']))
 async def cmd_mute(message: types.Message, bot: Bot):
     name1 = message.from_user.mention_html()
     if not message.reply_to_message:
@@ -50,9 +53,8 @@ async def cmd_mute(message: types.Message, bot: Bot):
         await message.reply(repl, parse_mode='html')
 
 
-@router.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['размут', 'Размут', 'Размутить',
-                                                                            'размутить', '!unmute', '!Unmute',
-                                                                            '/unmute', '+голос']))
+@router.message(MessageFilter(['размут', 'Размут', 'Размутить', 'размутить', '!unmute', '!Unmute',
+                               '/unmute', '+голос']))
 async def cmd_unmute(message: types.Message, bot: Bot):
     if not message.reply_to_message:
         await message.reply('Ошибка! Команда должна быть ответом на сообщение нарушителя!')
@@ -62,8 +64,7 @@ async def cmd_unmute(message: types.Message, bot: Bot):
     await message.reply("Пользователь был размучен! 😃")
 
 
-@router.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['Бан', 'бан', 'забанить',
-                                                                            'Забанить', '!ban', '/ban', '-чел']))
+@router.message(MessageFilter(['Бан', 'бан', 'забанить', 'Забанить', '!ban', '/ban', '-чел']))
 async def cmd_ban(message: types.Message, bot: Bot):
     if not message.reply_to_message:
         await message.reply('Ошибка! Команда должна быть ответом на сообщение нарушителя!')
@@ -72,9 +73,8 @@ async def cmd_ban(message: types.Message, bot: Bot):
     await message.answer(f"Пользователь был забанен! ❌\nДля разбана обратись к администраторам группы 🤓")
 
 
-@router.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['написать', 'Написать',
-                                                                            '!write', '!send', '/write',
-                                                                            'Отправить', '!написать', 'отправить']))
+@router.message(MessageFilter(['написать', 'Написать', '!write', '!send', '/write',
+                               'Отправить', '!написать', 'отправить']))
 async def cmd_write(message: types.Message, bot: Bot):
     if await is_admin(message, bot):
         if len(message.text.split()) > 1:
@@ -83,6 +83,6 @@ async def cmd_write(message: types.Message, bot: Bot):
                 if message.text[i] == ' ':
                     mt = message.text[i + 1:]
                     break
-            await message.answer(mt)
+            await message.answer(mt, disable_web_page_preview=True)
         else:
             await message.reply("Ошибка! \nПустой текст!")

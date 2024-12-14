@@ -1,25 +1,30 @@
-from aiogram import F, Router, types, Bot
+import asyncio
+
+from aiogram import F, Router, types
 
 from filters.chat_type import ChatTypeFilter
-from filters.cmd import MessageFilter
+from filters.cmd import MessageFilter, Args2MessageFilter
+
+from db import db
 
 from random import randint
 
 
 router = Router()
+router.message.filter(
+    F.text,
+    ChatTypeFilter(chat_type=['group', 'supergroup'])
+)
 
 
-@router.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['помощь', 'Помощь', 'помощ',
-                                                                            'Помощ', 'хелп', 'Хелп', '!help',
-                                                                            '/help']))
+@router.message(MessageFilter(['помощь', 'Помощь', 'помощ', 'Помощ', 'хелп', 'Хелп', '!help', '/help']))
 async def cmd_help(message: types.Message):
     await message.answer("🧐 Помощь \nТы всегда можешь написать в чат @liinkyyhelp, если у тебя есть "
                          "вопрос \nДоступные команды находятся на <a href='https://liinkyy.gitbook.io/link'>"
                          "сайте</a>", parse_mode="html")
 
 
-@router.message(F.text, ChatTypeFilter(['group', 'supergroup']), MessageFilter(['/random', '!rand', 'рандом',
-                                                                            'ранд', 'Рандом', 'Ранд']))
+@router.message(MessageFilter(['/random', '!rand', 'рандом', 'ранд', 'Рандом', 'Ранд']))
 async def cmd_rand(message: types.Message):
     try:
         start = int(message.text.split()[1])
@@ -31,3 +36,18 @@ async def cmd_rand(message: types.Message):
         await message.reply("Ошибка! Недостаточно аргументов! \nПример: !rand 1 100")
         return
     await message.reply(f"Ваше случайное число... 😲\n{randint(start, end)}!")
+
+
+@router.message(Args2MessageFilter(['кто я', 'хто я', 'ктоя', 'хтоя', '!about_me', '/about_me', 'about',
+                                    'who am i']))
+async def cmd_about_me(message: types.Message):
+    loop = asyncio.get_event_loop()
+    d = await db.get('users', 'description', 'id',
+                                             message.from_user.id, loop)
+    i = await db.get('users', 'icon', 'id',
+                                             message.from_user.id, loop)
+    tg_id = await db.get('users', 'id', 'id',
+                                             message.from_user.id, loop)
+    if not tg_id:
+        await db.set_user('users', message.from_user.id, 'нет', 'нет', loop)
+    return message.reply(f"Вы - @{message.from_user.username}. Описание - {d[0][0]}. Значки - {i[0][0]}")
