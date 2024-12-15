@@ -48,10 +48,11 @@ async def cmd_about_me(message: types.Message):
                                              message.from_user.id, loop)
     tg_id = await db.get('users', 'tg_id', 'tg_id',
                                              message.from_user.id, loop)
-    id = await db.get('users', 'id', 'tg_id',
+    l_id = await db.get('users', 'id', 'tg_id',
                                              message.from_user.id, loop)
-    if not tg_id:
+    if tg_id == ((), ):
         await db.set_user('users', message.from_user.id, 'нет', 'нет', loop)
-        return message.reply("Вы были успешно зарегистрированы в системе Линка! Напишите команду 'кто я' ещё раз")
-    return message.reply(f"😜 Вы - @{message.from_user.username}. \n🧐 Ваш id в системе линка: {id[0][0]}. \n"
+        return message.reply("👋 Вы были успешно зарегистрированы в системе Линка! \n👍 Напишите команду 'кто я' ещё раз")
+    return message.reply(f"😜 Вы - @{message.from_user.username}. \n🧐 Ваш id в системе линка: {l_id[0][0]}. \n"
                          f"👀 Описание - {d[0][0]}. \n🦾 Приметы - {i[0][0]}")
+
