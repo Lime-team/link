@@ -15,7 +15,7 @@ class MessageFilter(BaseFilter):
             return message.text.split()[0].lower() in self.message_text
 
 
-class Args2MessageFilter(BaseFilter):
+class ArgsMessageFilter(BaseFilter):
     def __init__(self, message_text: Union[str, list]):
         self.message_text = message_text
 

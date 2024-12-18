@@ -4,7 +4,7 @@ from pydantic import SecretStr
 
 class Settings(BaseSettings):
     bot_token: SecretStr
-    admin_id: SecretStr
+    admins_ids: SecretStr
 
     mysql_host: SecretStr
     mysql_user: SecretStr

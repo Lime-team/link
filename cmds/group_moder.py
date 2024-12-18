@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from filters.chat_type import ChatTypeFilter
 from filters.cmd import MessageFilter
-from filters.is_admin import is_admin
+from filters.is_admin import is_group_admin
 
 router = Router()
 router.message.filter(
@@ -76,7 +76,7 @@ async def cmd_ban(message: types.Message, bot: Bot):
 @router.message(MessageFilter(['написать', 'Написать', '!write', '!send', '/write',
                                'Отправить', '!написать', 'отправить']))
 async def cmd_write(message: types.Message, bot: Bot):
-    if await is_admin(message, bot):
+    if await is_group_admin(message, bot):
         if len(message.text.split()) > 1:
             mt = message.text
             for i in range(len(message.text)):
