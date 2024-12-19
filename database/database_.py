@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine, AsyncSession
-from sqlalchemy import UUID, Uuid
+from sqlalchemy import String
 
 from uuid import uuid4
 
@@ -14,4 +14,4 @@ async_session = async_sessionmaker(engine, class_=AsyncSession)
 
 
 class Base(AsyncAttrs, DeclarativeBase):
-    id_: Mapped[UUID] = mapped_column(Uuid(), default=uuid4())
+    id_: Mapped[str] = mapped_column(String(255), default=str(uuid4()))
