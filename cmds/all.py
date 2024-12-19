@@ -35,7 +35,7 @@ async def cmd_about_me(message: types.Message):
 @router.message(MessageFilter(['+описание', 'описание', '!description', '/description']),
                 ChatTypeFilter(chat_type=['group', 'supergroup', 'private']))
 async def cmd_update_description(message: types.Message):
-    description = message.text.split()[1:]
+    description = "".join(message.text.split()[1:])
     await update_user(tg_id=message.from_user.id, description=description)
     await message.reply("Описание изменено!")
 
@@ -43,9 +43,9 @@ async def cmd_update_description(message: types.Message):
 @router.message(MessageFilter(['+медаль', '+награда', 'наградить', '!medal', '/medal']),
                 ChatTypeFilter(chat_type=['group', 'supergroup', 'private']), IsBotAdmin())
 async def cmd_update_medals(message: types.Message):
-    id_ = message.text.split()[1]
-    medals = message.text.split()[2:]
-    user_info = await update_user(tg_id=id_, medals=medals)
+    tg_id = message.text.split()[1]
+    medals = "".join(message.text.split()[2:])
+    user_info = await update_user(tg_id=tg_id, medals=medals)
     if user_info is None:
         await message.reply("Такого пользователя нет!")
     else:
