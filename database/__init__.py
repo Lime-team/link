@@ -4,4 +4,4 @@ from .db_worker import set_user, remove_user, update_user, get_user_by_telegram_
 
 from .wrappers import connection
 
-from .models import ChatUser
+from .models import BotUser
