@@ -56,7 +56,7 @@ async def cmd_update_medals(message: types.Message):
                 IsBotAdmin())
 async def cmd_update_id(message: types.Message):
     tg_id = message.text.split()[1]
-    id_ = hex(message.text.split()[2])
+    id_ = message.text.split()[2]
     user_info = await update_user(tg_id=tg_id, id_=id_)
     if user_info is None:
         await message.reply("Такого пользователя нет!")
