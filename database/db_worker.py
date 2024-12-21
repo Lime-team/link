@@ -5,7 +5,7 @@ from sqlalchemy import select
 from typing import Optional, Dict, Any
 from sqlalchemy.exc import SQLAlchemyError
 
-logger = logging.getLogger("app")
+logger = logging.getLogger(__name__)
 
 
 @connection

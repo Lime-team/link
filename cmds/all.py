@@ -1,7 +1,6 @@
 from aiogram import F, Router, types
 
 from filters.chat_type import ChatTypeFilter
-from filters.cmd import MessageFilter, ArgsMessageFilter
 from filters.is_admin import IsBotAdmin
 from filters.cmd import MessageFilter, ArgsMessageFilter
 
@@ -27,7 +26,9 @@ async def cmd_about_me(message: types.Message):
     if user_info is None:
         await message.reply("Произошла ошибка! Пользователь не найден! Напиши в чат @liinkyyhelp")
         return
-    await message.reply(f"😜 Вы - @{message.from_user.username}. \n🧐 Ваш id в системе линка: {user_info['id_']}."
+    await message.reply(f"😜 Вы - {message.from_user.first_name} {message.from_user.last_name},"
+                        f" @{message.from_user.username}."
+                        f"\n🧐 Ваш id в системе линка: {user_info['id_']}."
                         f" \n👀 Описание - {user_info['description']}."
                         f" \n🦾 Награды (медали) - {user_info['medals']}")
 
@@ -83,4 +84,3 @@ async def cmd_rand(message: types.Message):
         await message.reply("Ошибка! Недостаточно аргументов! \nПример: !rand 1 100")
         return
     await message.reply(f"Ваше случайное число... 😲\n{randint(start, end)}!")
-

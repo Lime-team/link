@@ -1,11 +1,7 @@
-from typing import Union
-
 from aiogram.enums.chat_member_status import ChatMemberStatus
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
-
-from config_reader import config
 
 from app import bot_admins
 
@@ -13,7 +9,7 @@ from app import bot_admins
 async def is_group_admin(message, bo):
     member = await bo.get_chat_member(message.chat.id, message.from_user.id)
     b = await bo.get_chat_member(message.chat.id, bo.id)
-    if message.from_user.id == config.admin_id.get_secret_value():
+    if message.from_user.id in bot_admins:
         return True
     if (member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR] or
             b.status != ChatMemberStatus.ADMINISTRATOR):
