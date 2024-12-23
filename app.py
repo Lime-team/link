@@ -15,10 +15,10 @@ import logging
 from config_reader import config
 
 
-async def on_start(base_url: str):
+async def on_start():
     await bot.delete_webhook(drop_pending_updates=True)
     if config.webhook.get_secret_value() == "TRUE":
-        await bot.set_webhook(f"{base_url}/update")
+        await bot.set_webhook(f"{config.webhook_base_url}/update")
     for admin_id in bot_admins:
         try:
             await bot.send_message(admin_id, f'Бот запущен!')
@@ -70,7 +70,7 @@ async def main():
         await site.start()
         await Event().wait()
     else:
-        await dp.start_polling()
+        await dp.start_polling(bot)
 
 
 bot = Bot(token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode='html'))
