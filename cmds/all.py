@@ -68,7 +68,7 @@ async def cmd_update_id(message: types.Message):
 @router.message(MessageFilter(['помощь', 'Помощь', 'помощ', 'Помощ', 'хелп', 'Хелп', '!help', '/help']))
 async def cmd_help(message: types.Message):
     await message.answer("🧐 Помощь \nТы всегда можешь написать в чат @liinkyyhelp, если у тебя есть "
-                         "вопрос \nДоступные команды находятся на <a href='https://docs.linkbot.run.place'>"
+                         "вопрос \nДоступные команды находятся на <a href='https://liinkyy.gitbook.io/link'>"
                          "сайте</a>", parse_mode="html")
 
 
